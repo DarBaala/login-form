@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 import Header from "../components/Header";
 import { Container } from "../components/Container";
@@ -18,6 +19,11 @@ type CheckboxProps = {
   toggle: () => void;
 };
 
+type AuthType = {
+  email: string;
+  password: string;
+};
+
 const Title = styled.p`
   font-weight: 400;
   font-size: 16px;
@@ -30,6 +36,7 @@ const InputLogin = styled.input`
   height: 20px;
   padding: 20px;
   border: none;
+  border-radius: 8px;
   outline: 0;
   font-weight: 400;
   font-size: 16px;
@@ -93,6 +100,33 @@ const CheckboxContainer = styled.div`
     border-radius: 4px;
   }
 `;
+
+const LoginFailed = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  width: 598px;
+  height: 18px;
+  background-color: #f5e9e9;
+  border: 1px solid #e26f6f;
+  border-radius: 8px;
+  margin-bottom: 27px;
+  p {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #ffc8c8;
+    text-align: center;
+    color: #ee6565;
+    margin-right: 14px;
+  }
+  span {
+    font-weight: 400;
+    font-size: 14px;
+    color: #000000;
+  }
+`;
+
 const Checkbox: React.FC<CheckboxProps> = ({ toggle, labelText, id }) => (
   <CheckboxContainer>
     <input onClick={toggle} type="checkbox" id={id} />
@@ -101,28 +135,69 @@ const Checkbox: React.FC<CheckboxProps> = ({ toggle, labelText, id }) => (
 );
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
+
   const {
     formState: { errors },
     register,
     handleSubmit,
   } = useForm<FormValues>();
-  const [checked, setChecked] = useState(false);
-  console.log(checked);
+  const [checked, setChecked] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorWindow, SetErrorWindow] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+
+  console.log(isLoading);
 
   const toggleChecked = () => {
     checked ? setChecked(false) : setChecked(true);
   };
-  const onSubmit = (data: {}) => {
-    console.log(data);
+
+  const onSubmit = (data: AuthType) => {
+    SetErrorWindow(false);
+    setIsLoading(true);
+    const proAuth = new Promise<AuthType>((resolve) => {
+      setTimeout(() => {
+        resolve(data);
+      }, 2000);
+    });
+    proAuth.then((data) => {
+      console.log(data);
+      setEmail(data.email);
+      if (
+        data.email === "steve.jobs@example.com" &&
+        data.password === "password"
+      ) {
+        console.log(email);
+        navigate("/profile");
+      } else {
+        SetErrorWindow(true);
+      }
+      setIsLoading(false);
+    });
   };
 
   return (
     <Container>
       <Header />
+      {errorWindow ? (
+        <LoginFailed>
+          <p>!</p>
+          <span>Пользователя {email} не существует</span>
+        </LoginFailed>
+      ) : (
+        ""
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Title>Логин</Title>
         <InputLogin
-          style={errors.email && { marginBottom: "8px" }}
+          style={
+            errors.email && {
+              marginBottom: "8px",
+              color: "#E26F6F",
+              border: "1px solid #E26F6F",
+            }
+          }
           {...register("email", {
             required: "Обязательное поле",
             pattern: {
@@ -137,7 +212,13 @@ const Login: React.FC = () => {
         </div>
         <Title>Пароль</Title>
         <InputPassword
-          style={errors.password && { marginBottom: "8px" }}
+          style={
+            errors.password && {
+              marginBottom: "8px",
+              color: "#E26F6F",
+              border: "1px solid #E26F6F",
+            }
+          }
           {...register("password", { required: "Обязательное поле" })}
         ></InputPassword>
         <div style={{ color: "#E26F6F", marginBottom: "20px" }}>
@@ -148,7 +229,19 @@ const Login: React.FC = () => {
           id="checkbox"
           labelText={"Запомнить пароль"}
         />
-        <Button type="submit">Войти</Button>
+        <Button
+          disabled={isLoading}
+          style={
+            isLoading
+              ? {
+                  backgroundColor: "#99A9FF",
+                }
+              : {}
+          }
+          type="submit"
+        >
+          Войти
+        </Button>
       </form>
     </Container>
   );
