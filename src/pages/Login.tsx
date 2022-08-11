@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+
+import AppContext from "../context";
 
 import Header from "../components/Header";
 import { Container } from "../components/Container";
@@ -22,6 +24,11 @@ type CheckboxProps = {
 type AuthType = {
   email: string;
   password: string;
+};
+
+export type EmailState = {
+  email: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const Title = styled.p`
@@ -136,7 +143,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ toggle, labelText, id }) => (
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-
+  const { email, setEmail } = useContext<EmailState>(AppContext);
   const {
     formState: { errors },
     register,
@@ -146,7 +153,6 @@ const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorEmail, SetErrorEmail] = useState<boolean>(false);
   const [errorPassword, SetErrorPassword] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
 
   console.log(isLoading);
 

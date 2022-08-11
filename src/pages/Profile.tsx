@@ -1,7 +1,12 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+
+import AppContext from "../context";
 
 import Header from "../components/Header";
+
+import { EmailState } from "./Login";
 
 const Title = styled.h1`
   font-weight: 400;
@@ -30,11 +35,12 @@ const Button = styled.button`
 `;
 
 const Profile: React.FC = () => {
+  const { email } = useContext<EmailState>(AppContext);
   return (
     <>
       <Header />
       <Title>
-        Здравствуйте, <b>steve.jobs@example.com</b>
+        Здравствуйте, <b>{email}</b>
       </Title>
       <Link style={{ textDecoration: "none" }} to="/">
         <Button>Выйти</Button>
