@@ -144,7 +144,8 @@ const Login: React.FC = () => {
   } = useForm<FormValues>();
   const [checked, setChecked] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorWindow, SetErrorWindow] = useState<boolean>(false);
+  const [errorEmail, SetErrorEmail] = useState<boolean>(false);
+  const [errorPassword, SetErrorPassword] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
 
   console.log(isLoading);
@@ -154,7 +155,8 @@ const Login: React.FC = () => {
   };
 
   const onSubmit = (data: AuthType) => {
-    SetErrorWindow(false);
+    SetErrorEmail(false);
+    SetErrorPassword(false);
     setIsLoading(true);
     const proAuth = new Promise<AuthType>((resolve) => {
       setTimeout(() => {
@@ -170,8 +172,10 @@ const Login: React.FC = () => {
       ) {
         console.log(email);
         navigate("/profile");
-      } else {
-        SetErrorWindow(true);
+      } else if (data.email !== "steve.jobs@example.com") {
+        SetErrorEmail(true);
+      } else if (data.password !== "password") {
+        SetErrorPassword(true);
       }
       setIsLoading(false);
     });
@@ -180,10 +184,18 @@ const Login: React.FC = () => {
   return (
     <Container>
       <Header />
-      {errorWindow ? (
+      {errorEmail ? (
         <LoginFailed>
           <p>!</p>
           <span>Пользователя {email} не существует</span>
+        </LoginFailed>
+      ) : (
+        ""
+      )}
+      {errorPassword ? (
+        <LoginFailed>
+          <p>!</p>
+          <span>Вы ввели неприавльный пароль!</span>
         </LoginFailed>
       ) : (
         ""
