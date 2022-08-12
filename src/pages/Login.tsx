@@ -28,7 +28,7 @@ type AuthType = {
 
 export type EmailState = {
   email?: string;
-  setEmail?: React.Dispatch<React.SetStateAction<string>>;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const Title = styled.p`
