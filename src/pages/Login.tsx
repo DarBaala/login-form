@@ -27,7 +27,7 @@ type AuthType = {
 };
 
 export type EmailState = {
-  email?: string;
+  email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 };
 
@@ -151,18 +151,16 @@ const Login: React.FC = () => {
   } = useForm<FormValues>();
   const [checked, setChecked] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorEmail, SetErrorEmail] = useState<boolean>(false);
-  const [errorPassword, SetErrorPassword] = useState<boolean>(false);
-
-  console.log(isLoading);
+  const [errorEmail, setErrorEmail] = useState<boolean>(false);
+  const [errorPassword, setErrorPassword] = useState<boolean>(false);
 
   const toggleChecked = () => {
     checked ? setChecked(false) : setChecked(true);
   };
 
   const onSubmit = (data: AuthType) => {
-    SetErrorEmail(false);
-    SetErrorPassword(false);
+    setErrorEmail(false);
+    setErrorPassword(false);
     setIsLoading(true);
     const proAuth = new Promise<AuthType>((resolve) => {
       setTimeout(() => {
@@ -170,18 +168,16 @@ const Login: React.FC = () => {
       }, 2000);
     });
     proAuth.then((data) => {
-      console.log(data);
       setEmail(data.email);
       if (
         data.email === "steve.jobs@example.com" &&
         data.password === "password"
       ) {
-        console.log(email);
         navigate("/profile");
       } else if (data.email !== "steve.jobs@example.com") {
-        SetErrorEmail(true);
+        setErrorEmail(true);
       } else if (data.password !== "password") {
-        SetErrorPassword(true);
+        setErrorPassword(true);
       }
       setIsLoading(false);
     });
@@ -201,7 +197,7 @@ const Login: React.FC = () => {
       {errorPassword ? (
         <LoginFailed>
           <p>!</p>
-          <span>Вы ввели неприавльный пароль!</span>
+          <span>Вы ввели неправильный пароль!</span>
         </LoginFailed>
       ) : (
         ""
