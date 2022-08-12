@@ -27,8 +27,8 @@ type AuthType = {
 };
 
 export type EmailState = {
-  email: string;
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
+  email?: string;
+  setEmail?: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const Title = styled.p`
@@ -143,7 +143,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ toggle, labelText, id }) => (
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { email, setEmail } = useContext<EmailState>(AppContext);
+  const { email, setEmail } = useContext(AppContext);
   const {
     formState: { errors },
     register,

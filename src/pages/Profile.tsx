@@ -6,8 +6,6 @@ import AppContext from "../context";
 
 import Header from "../components/Header";
 
-import { EmailState } from "./Login";
-
 const Title = styled.h1`
   font-weight: 400;
   font-size: 40px;
@@ -35,7 +33,7 @@ const Button = styled.button`
 `;
 
 const Profile: React.FC = () => {
-  const { email } = useContext<EmailState>(AppContext);
+  const { email } = useContext(AppContext);
   return (
     <>
       <Header />
